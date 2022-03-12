@@ -1,4 +1,5 @@
-CREATE DATABASE lab_8_1;
+﻿CREATE DATABASE lab_8_1 CONTAINMENT = PARTIAL;
+ALTER DATABASE lab_8_1 SET COMPATIBILITY_LEVEL = 110;
 USE lab_8_1;
 
 CREATE TABLE Employee
@@ -12,6 +13,23 @@ CREATE TABLE Employee
 INSERT INTO Employee (name, phone, salary)
 		VALUES ('FIO1', 'phone1', 25000), ('FIO2', 'phone2', 26000),
 			('FIO3', 'phone3', 27000), ('FIO4', 'phone4', 28000);
+
+/* Разрешить использование автономных баз данных на уровне сервера.
+	Автономные базы данных хранят всю необходимую для работы и настройки информацию в себе. 
+	Такие базы полностью независимы от настроек SQL сервера, не имеют внешних зависимостей и содержат в себе все механизмы аутентификации. 
+	Так же не имеет значения, какая настройка языка выставлена у сервера.
+*/
+
+/* Enabled Advanced options. Разрешить работать с настройками с закладки Advanced. */
+sp_configure 'show advanced', 1; RECONFIGURE WITH OVERRIDE; 
+/* Enabled Database Containment. Разрешить использование автономных баз данных. */
+sp_configure 'contained database authentication', 1; RECONFIGURE WITH OVERRIDE;
+
+--CREATE USER EAdmin WITHOUT LOGIN;
+CREATE USER EAdmin WITH PASSWORD='1', DEFAULT_SCHEMA=[dbo];
+GRANT CONTROL ON DATABASE::lab_8_1 TO EAdmin;
+ALTER ROLE db_owner ADD MEMBER EAdmin;
+ALTER ROLE db_securityadmin ADD MEMBER EAdmin;
 
 USE master;
 CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'strong';

@@ -33,6 +33,11 @@ export PATH="$PATH:/opt/mssql-tools/bin"
 Пробуем подключиться:
 sqlcmd -S localhost -U SA
 
+/* Enabled Advanced options. Разрешить работать с настройками с закладки Advanced. */
+sp_configure 'show advanced', 1; RECONFIGURE WITH OVERRIDE; 
+/* Enabled Database Containment. Разрешить использование автономных баз данных. */
+sp_configure 'contained database authentication', 1; RECONFIGURE WITH OVERRIDE;
+
 Восстанавливаем БД:
 SELECT @@VERSION;
 CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'VeryStrong123!';
@@ -45,5 +50,3 @@ GO
 Additions:
 RESTORE HEADERONLY FROM DISK = 'H:\SQLDEVELOPER\MSSQL15.MSSQLSERVER\MSSQL\Backup\lab_8_1.bak';
 RESTORE FILELISTONLY FROM DISK = 'H:\SQLDEVELOPER\MSSQL15.MSSQLSERVER\MSSQL\Backup\lab_8_1.bak'	
-iptables -I INPUT 1 -p tcp --dport 1433 -j ACCEPT
-
